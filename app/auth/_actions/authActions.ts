@@ -142,3 +142,11 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
 
     redirect("/auth/login")
 }
+
+export const logoutAction = async () => {
+    const cookieStore = await cookies();
+
+    cookieStore.delete("access_token");
+
+    redirect("/")
+}
