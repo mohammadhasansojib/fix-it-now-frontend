@@ -42,7 +42,6 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
 
     
     const validationResult = LoginSchema.safeParse(payload);
-    console.log("validation result: ", validationResult);
 
     if (!validationResult.success) {
         const errorMessage = validationResult.error.issues.map(issue => issue.message).join(" and ");
@@ -53,16 +52,24 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         }
     }
 
-    const res = await fetch(`${config.server.backend_api_url}/api/auth/login`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(validationResult.data),
-    });
+    let result;
 
-    const result = await res.json();
-    console.log("response: ", result);
+    try {
+        const res = await fetch(`${config.server.backend_api_url}/api/auth/login`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(validationResult.data),
+        });
+
+        result = await res.json();
+    } catch {
+        return {
+            success: false,
+            message: "Something went wrong. Please try again.",
+        };
+    }
 
     if (!result.success) {
         return result;
@@ -73,10 +80,12 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
 
     // set cookies
     const cookieStore = await cookies();
-    cookieStore.set("access_token", accessToken as string, {
+    cookieStore.set("access_token", accessToken, {
         httpOnly: true,
         maxAge: 60 * 60 * 24,
         sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
     });
     
     redirect("/")
@@ -96,7 +105,6 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
         password,
         role,
     }
-    console.log("payload: ", payload);
 
     const validationResult = RegisterSchema.safeParse(payload);
 
@@ -109,16 +117,24 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
         }
     }
 
-    const res = await fetch(`${config.server.backend_api_url}/api/auth/register`, {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(validationResult.data),
-    });
+    let result;
 
-    const result = await res.json();
-    console.log("response: ", result);
+    try {
+        const res = await fetch(`${config.server.backend_api_url}/api/auth/register`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(validationResult.data),
+        });
+
+        result = await res.json();
+    } catch {
+        return {
+            success: false,
+            message: "Something went wrong. Please try again.",
+        };
+    }
 
     if (!result.success) {
         return result;
