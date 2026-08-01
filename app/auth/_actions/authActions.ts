@@ -3,7 +3,8 @@
 import { config } from "@/config";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import * as z from "zod"
+import { LoginSchema } from "../_schemas/login.schema";
+import { RegisterSchema } from "../_schemas/register.schema";
 
 type LoginState = {
   success: boolean,
@@ -39,10 +40,7 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         password,
     }
 
-    const LoginSchema = z.object({
-        email: z.email("invalid email address"),
-        password: z.string().min(8, "password length is less than 8"),
-    });
+    
     const validationResult = LoginSchema.safeParse(payload);
     console.log("validation result: ", validationResult);
 
@@ -71,7 +69,7 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
     }
 
     // get jwt tokens
-    const accessToken = await result.data.accessToken;
+    const accessToken = result.data.accessToken;
 
     // set cookies
     const cookieStore = await cookies();
@@ -99,25 +97,6 @@ export const registerAction = async (prevState: RegisterState, formData: FormDat
         role,
     }
     console.log("payload: ", payload);
-
-    const RegisterSchema = z.object({
-        username: z.string()
-        .min(3, `username must be atleast 3 characters`)
-        .max(30, `username cannot exceed 30 characters`)
-        .trim(),
-
-        email: z.email("Invalid email address")
-        .min(1, "email is required")
-        .trim(),
-
-        password: z.string()
-        .min(8, "password must be atleast 8 characters")
-        .max(50, "password cannot exceed 50 characters")
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 
-      "Password must contain uppercase, lowercase, and number"),
-
-        role: z.enum(['customer', 'technician'], "role must be 'customer' or 'technician'"),
-    });
 
     const validationResult = RegisterSchema.safeParse(payload);
 
