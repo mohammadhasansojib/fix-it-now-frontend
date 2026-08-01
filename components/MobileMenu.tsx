@@ -14,11 +14,24 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import type { NavLink } from "./Navbar";
+import { logoutAction } from "@/app/auth/_actions/authActions";
+import Link from "next/link";
 
 type MobileMenuProps = {
   links: NavLink[];
   isAuthenticated: boolean;
 };
+
+const LogoutButton = () => {
+
+  return (
+    <form action={logoutAction}>
+      <Button type="submit" variant="outline" className="w-full">
+        Log out
+      </Button>
+    </form>
+  )
+}
 
 export const MobileMenu: FC<MobileMenuProps> = ({ links, isAuthenticated }) => {
   const [open, setOpen] = useState(false);
@@ -44,12 +57,12 @@ export const MobileMenu: FC<MobileMenuProps> = ({ links, isAuthenticated }) => {
         <nav className="flex flex-col gap-1 py-4">
           {links.map((link) => (
             <SheetClose asChild key={link.label}>
-              <a
+              <Link
                 href={link.href}
                 className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             </SheetClose>
           ))}
         </nav>
@@ -70,16 +83,21 @@ export const MobileMenu: FC<MobileMenuProps> = ({ links, isAuthenticated }) => {
                   </p>
                 </div>
               </div>
-              <Button variant="outline" className="w-full">
-                Log out
-              </Button>
+              {/* Logout Button Here */}
+              <LogoutButton />
             </>
           ) : (
             <>
               <Button variant="outline" className="w-full">
-                Log in
+                <Link href="/auth/login">
+                  Log in
+                </Link>
               </Button>
-              <Button className="w-full">Sign up</Button>
+              <Button className="w-full">
+                <Link href="/auth/register">
+                  Register
+                </Link>
+              </Button>
             </>
           )}
         </div>

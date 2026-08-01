@@ -15,10 +15,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { logoutAction } from "@/app/auth/_actions/authActions";
 
 type AuthActionsProps = {
   isAuthenticated: boolean;
 };
+
+const LogoutButton = () => {
+
+  return (
+    <form action={logoutAction}>
+      <Button type="submit">
+        Logout
+      </Button>
+    </form>
+  )
+}
 
 export const AuthActions: FC<AuthActionsProps> = ({ isAuthenticated }) => {
   if (!isAuthenticated) {
@@ -55,7 +67,7 @@ export const AuthActions: FC<AuthActionsProps> = ({ isAuthenticated }) => {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-red-600 focus:text-red-600">
-          Log out
+          <LogoutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

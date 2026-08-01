@@ -1,6 +1,7 @@
 import Link from "next/link";
 import AuthActions from "./Authactions";
 import { MobileMenu } from "./MobileMenu";
+import { isAuthenticated } from "@/lib/auth/isAuthenticated";
 
 export type NavLink = {
   label: string;
@@ -13,9 +14,11 @@ const NAV_LINKS: NavLink[] = [
 ];
 
 
-const IS_AUTHENTICATED = false;
+export const Navbar = async () => {
 
-export const Navbar = () => {
+  const IS_AUTHENTICATED = await isAuthenticated();
+
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
