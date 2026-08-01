@@ -1,70 +1,59 @@
-'use client'
-
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Clock, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Clock } from "lucide-react";
+import { formatDuration, formatPrice, type Service } from "@/lib/service";
 
-export interface Service {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  durationMinutes: number;
-  technicianId: string;
-  categoryId: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// Server Component — no "use client" needed. The only interactive element
+// is a Link (via Button asChild), which doesn't require client JS.
+//
+// Note: the card is a <div>, not a <Link>, because the "View details"
+// button is itself a Link — nesting an <a> inside another <a> is invalid
+// HTML. The `group` class still lets the whole card react on hover even
+// though only the button is clickable.
 
-interface ServiceCardProps {
+type ServiceCardProps = {
   service: Service;
-  onBook?: (serviceId: string) => void;
-}
+};
 
-function formatDuration(minutes: number) {
-  const hrs = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hrs === 0) return `${mins} min`;
-  if (mins === 0) return `${hrs} hr`;
-  return `${hrs} hr ${mins} min`;
-}
-
-export default function ServiceCard({ service, onBook }: ServiceCardProps) {
+export const ServiceCard = ({ service }: ServiceCardProps) => {
   return (
-    <Card className="border border-neutral-200 bg-white text-black transition-colors hover:border-neutral-400">
-      <CardHeader className="space-y-1.5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="text-base font-semibold leading-tight">
+    <div className="group flex items-stretch overflow-hidden rounded-2xl border border-border bg-background shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:shadow-foreground/10">
+      <div className="flex w-24 shrink-0 items-center justify-center bg-muted sm:w-28">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-foreground text-background transition-transform duration-200 group-hover:scale-105">
+          <Wrench className="h-5 w-5" />
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col justify-between p-5">
+        <div>
+          <h3 className="text-base font-semibold leading-tight text-foreground line-clamp-1">
             {service.title}
           </h3>
-          <Badge
-            variant="outline"
-            className="shrink-0 border-neutral-300 text-neutral-600"
-          >
-            ${service.price}
-          </Badge>
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
+            {service.description}
+          </p>
         </div>
-        <p className="line-clamp-2 text-sm text-neutral-500">
-          {service.description}
-        </p>
-      </CardHeader>
 
-      <CardContent>
-        <div className="flex items-center gap-1.5 text-sm text-neutral-500">
-          <Clock className="h-4 w-4" />
-          <span>{formatDuration(service.durationMinutes)}</span>
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <div className="flex flex-col">
+            <span className="text-lg font-semibold tracking-tight text-foreground">
+              {formatPrice(service.price)}
+            </span>
+            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              {formatDuration(service.durationMinutes)}
+            </span>
+          </div>
+
+          
         </div>
-      </CardContent>
 
-      <CardFooter>
-        <Button
-          className="w-full bg-black text-white hover:bg-neutral-800"
-          onClick={() => onBook?.(service.id)}
-        >
-          Book now
-        </Button>
-      </CardFooter>
-    </Card>
+        <Button asChild size="sm" className="mt-5">
+            <Link href={`/services/${service.id}`}>View details</Link>
+          </Button>
+      </div>
+    </div>
   );
-}
+};
+
+export default ServiceCard;
