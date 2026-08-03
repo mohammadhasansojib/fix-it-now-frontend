@@ -1,8 +1,8 @@
-import Link from "next/link";
+// app/services/[id]/_components/ServiceDetails.tsx
 import { Clock, Tag, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { formatDuration, formatPrice, type Service } from "@/lib/service";
 import { isAuthenticated } from "@/lib/auth/isAuthenticated";
+import { BookNowModal } from "./BookNowModal";
 
 
 type ServiceDetail = Service & {
@@ -53,7 +53,6 @@ type ServiceDetailsProps = {
 
 export const ServiceDetails = async ({ service }: ServiceDetailsProps) => {
   const authenticated = await isAuthenticated();
-  const bookHref = authenticated ? "/dashboard/customer" : "/auth/login";
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 lg:px-8">
@@ -102,9 +101,7 @@ export const ServiceDetails = async ({ service }: ServiceDetailsProps) => {
         )}
       </dl>
 
-      <Button asChild size="lg" className="mt-8 w-full">
-        <Link href={bookHref}>Book Now</Link>
-      </Button>
+      <BookNowModal serviceId={service.id} authenticated={authenticated} />
     </div>
   );
 };
