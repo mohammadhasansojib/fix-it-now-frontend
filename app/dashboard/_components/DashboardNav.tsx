@@ -11,6 +11,11 @@ const customerNavItems = [
     href: "/dashboard/customer",
     icon: LayoutDashboard,
   },
+  {
+    label: "Payable Bookings",
+    href: "/dashboard/customer/bookings",
+    icon: LayoutDashboard,
+  },
 ];
 
 const technicianNavItems = [
@@ -27,6 +32,11 @@ const technicianNavItems = [
   {
     label: "Services",
     href: "/dashboard/technician/services",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Connect Stripe",
+    href: "/dashboard/technician/payment",
     icon: LayoutDashboard,
   },
 ]
