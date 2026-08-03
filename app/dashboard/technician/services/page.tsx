@@ -23,6 +23,32 @@ interface Category {
   name: string;
 }
 
+type Role = "TECHNICIAN" | "CUSTOMER" | "ADMIN";
+
+interface TechnicianProfile {
+  id: string;
+  bio: string;
+  userId: string;
+  profilePhoto: string | null;
+  price: string;
+  skills: string[];
+  experience: string | null;
+  stripeAccountId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface User {
+  id: string;
+  username: string;
+  email: string;
+  role: Role;
+  isBanned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  technicianProfile: TechnicianProfile;
+}
+
 const getServices = async (): Promise<Service[]> => {
   const res = await fetch(`${process.env.BACKEND_API_URL}/api/services`, {
     cache: "no-store",
@@ -43,7 +69,7 @@ const getCategories = async (): Promise<Category[]> => {
 
 const TechnicianServicesPage = async () => {
   const technician = await requireTechnician();
-  const technicianProfileId = technician.technicianProfile.id;
+  const technicianProfileId = (technician as User).technicianProfile.id;
 
   const [allServices, categories] = await Promise.all([
     getServices(),
