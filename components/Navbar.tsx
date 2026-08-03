@@ -2,6 +2,7 @@ import Link from "next/link";
 import AuthActions from "./Authactions";
 import { MobileMenu } from "./MobileMenu";
 import { isAuthenticated } from "@/lib/auth/isAuthenticated";
+import { getUserRole } from "@/lib/auth/getUserRole";
 
 export type NavLink = {
   label: string;
@@ -17,6 +18,7 @@ const NAV_LINKS: NavLink[] = [
 export const Navbar = async () => {
 
   const IS_AUTHENTICATED = await isAuthenticated();
+  const role = IS_AUTHENTICATED ? await getUserRole() : undefined;
 
   
   return (
@@ -47,7 +49,7 @@ export const Navbar = async () => {
 
         {/* Right side — desktop. Client component: needs Radix dropdown state */}
         <div className="hidden md:flex items-center gap-3">
-          <AuthActions isAuthenticated={IS_AUTHENTICATED} />
+          <AuthActions isAuthenticated={IS_AUTHENTICATED} role={role} />
         </div>
 
         {/* Mobile trigger + sheet. Client component: needs useState */}
