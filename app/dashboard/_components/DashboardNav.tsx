@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navItems = [
+const customerNavItems = [
   {
     label: "Dashboard",
     href: "/dashboard/customer",
@@ -13,12 +13,50 @@ const navItems = [
   },
 ];
 
+const technicianNavItems = [
+  {
+    label: "Dashboard",
+    href: "/dashboard/technician",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Requested Bookings",
+    href: "/dashboard/technician/bookings/requested",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Services",
+    href: "/dashboard/technician/services",
+    icon: LayoutDashboard,
+  },
+]
+
+const adminNavItems = [
+  {
+    label: "Dashboard",
+    href: "/dashboard/admin",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Categories",
+    href: "/dashboard/admin/categories",
+    icon: LayoutDashboard,
+  },
+]
+
 interface DashboardNavProps {
   onNavigate?: () => void;
+  role: "ADMIN" | "CUSTOMER" | "TECHNICIAN";
 }
 
-export function DashboardNav({ onNavigate }: DashboardNavProps) {
+export function DashboardNav({ onNavigate, role }: DashboardNavProps) {
   const pathname = usePathname();
+
+  const navItems = role === "ADMIN"
+                  ? adminNavItems
+                  : role === "TECHNICIAN"
+                  ? technicianNavItems
+                  : customerNavItems;
 
   return (
     <nav aria-label="Dashboard navigation" className="flex flex-col gap-1">
