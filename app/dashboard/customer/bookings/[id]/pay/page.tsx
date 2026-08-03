@@ -67,8 +67,8 @@ const PayPage = async ({ params }: PayPageProps) => {
       redirect("/payment/cancel");
     }
 
-    const { checkoutUrl } = await res.json();
-    redirect(checkoutUrl);
+    const result = await res.json();
+    redirect(result.data.checkoutUrl);
   };
 
   if (!booking) {
@@ -81,6 +81,8 @@ const PayPage = async ({ params }: PayPageProps) => {
   }
 
   const isPaid = booking.status === "PAID";
+  const isRequested = booking.status === "REQUESTED";
+  const isAccepted = booking.status === "ACCEPTED";
 
   return (
     <div className="flex flex-col gap-6">
@@ -106,8 +108,13 @@ const PayPage = async ({ params }: PayPageProps) => {
         </CardContent>
         <CardFooter className="flex flex-col items-stretch gap-2">
           <form action={payAction}>
-            <Button type="submit" size="lg" className="w-full" disabled={isPaid}>
-              {isPaid ? "Already Paid" : "Pay Now"}
+            <Button type="submit" size="lg" className="w-full" disabled={!isAccepted}>
+            {
+              isPaid ? "Already Paid"
+              : isRequested
+              ? "Not Accepted Yet"
+              : "Pay Now"
+            }
             </Button>
           </form>
           <p className="text-center text-xs text-muted-foreground">
