@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { LoginSchema } from "../_schemas/login.schema";
 import { RegisterSchema } from "../_schemas/register.schema";
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 type LoginState = {
   success: boolean,
@@ -78,6 +79,14 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
     // get jwt tokens
     const accessToken = result.data.accessToken;
 
+    const decoded = jwt.decode(accessToken) as JwtPayload;
+    const role = decoded.role;
+    const redirectPath = role === "ADMIN"
+                        ? "/dashboard/admin"
+                        : role === "TECHNICIAN"
+                        ? "/dashboard/technician"
+                        : "/dashboard/customer";
+
     // set cookies
     const cookieStore = await cookies();
     cookieStore.set("access_token", accessToken, {
@@ -88,7 +97,7 @@ export const loginAction = async (prevState: LoginState, formData: FormData) => 
         path: "/",
     });
     
-    redirect("/")
+    redirect(redirectPath);
     
     // return result;
 }
@@ -148,5 +157,5 @@ export const logoutAction = async () => {
 
     cookieStore.delete("access_token");
 
-    redirect("/")
+    redirect("/auth/login")
 }
