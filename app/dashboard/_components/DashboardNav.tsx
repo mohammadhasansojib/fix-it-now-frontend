@@ -46,7 +46,7 @@ const adminNavItems = [
 
 interface DashboardNavProps {
   onNavigate?: () => void;
-  role: "ADMIN" | "CUSTOMER" | "TECHNICIAN";
+  role?: "ADMIN" | "CUSTOMER" | "TECHNICIAN";
 }
 
 export function DashboardNav({ onNavigate, role }: DashboardNavProps) {
